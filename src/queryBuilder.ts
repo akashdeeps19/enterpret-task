@@ -43,41 +43,60 @@ export class FilterBuilder{
         return `${this.rule.field}  ${this.conditionMapping[this.rule.condition]}  ${this.rule.value}`;
     }
 
-    getQueryRule(field: string, condition: string, criteria: string){
+    setQueryRule(field: string, condition: string, criteria: string){
         this.rule.field = field;
         this.rule.condition = condition;
         this.rule.value = criteria;
+    }
+
+    getQueryRule(){
         return this.rule;
     }
 }
 
+export class GroupFilter{
+    ruleGroup: RuleGroup;
+    fields: string[];
+    conditionForFields: {[key: string]: string[]};
+    conditionMapping: {[key: string]: string};
+    valueForFields: {[key: string]: string[]};
+    children: (FilterBuilder | GroupFilter)[];
 
-// let qb = new QueryBuilder(fields, conditionForFields, conditionMapping, valueForFields);
+    constructor(fields: string [], conditionForFields: {[key: string]: string[]}, conditionMapping: {[key: string]: string}, valueForFields: {[key: string]: string[]}){
+        this.fields = fields;
+        this.conditionForFields = conditionForFields;
+        this.conditionMapping = conditionMapping;
+        this.valueForFields = valueForFields;
+        this.ruleGroup = {children: [], conjunction: 'AND', not: false, type : 'rule_group'};
+        this.children = [];
+    }
 
-// function populateSelect(select, options){
-//     let sel = document.getElementById(select);
-//     for (let i = 0;i < options.length;i++){
-//         let opt = document.createElement('option');
-//         opt.value = options[i];
-//         opt.innerHTML = options[i];
-//         sel.appendChild(opt);
-//     }
-// }
+    addGroupFilter(){
+        this.children.push(new GroupFilter(this.fields, this.conditionForFields, this.conditionMapping, this.valueForFields));
+        (this.children[this.children.length-1] as GroupFilter).addFilter();
+        return this.children[this.children.length-1]
+    }
+    addFilter(){
+        this.children.push(new FilterBuilder(this.fields, this.conditionForFields, this.conditionMapping, this.valueForFields));
+        return this.children[this.children.length-1]
+    }
 
-// populateSelect('field', fields);
+    getQueryRule(){
+        this.ruleGroup.children = [];
+        for(let child of this.children){
+            this.ruleGroup.children.push(child.getQueryRule())
+        }
+        return this.ruleGroup;
+    }
 
-// function populateConditionsVals(){
-//     let field = (<HTMLSelectElement>document.getElementById('field')).value;
-//     populateSelect('condition', qb.setCondition(field))
-//     populateSelect('criteria', qb.setValue(field))
-// }
-
-// function getQuery(){
-//     let field = (<HTMLSelectElement>document.getElementById('field')).value;
-//     let condition = (<HTMLSelectElement>document.getElementById('condition')).value;
-//     let criteria = (<HTMLSelectElement>document.getElementById('criteria')).value;
-//     document.getElementById('query').innerHTML = qb.getQueryString(field, condition, criteria);
-// }
-
-
-
+    getQueryString(){
+        this.getQueryRule()
+        let opMap = {'AND' : '&&', 'OR' : '||'};
+        let query = "(";
+        for(let i = 0;i < this.children.length-1;i++){
+            query += `${this.children[i].getQueryString()}  ${opMap[this.ruleGroup.conjunction]} `;
+        }
+        query += this.children[this.children.length-1].getQueryString() + ')';
+        return query;
+    }
+}

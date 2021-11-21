@@ -1,29 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Filter from './Filter';
-import { FilterBuilder } from './queryBuilder';
+import { FilterBuilder, GroupFilter } from './queryBuilder';
 
-function FilterBox() {
-  let fields = ['Theme', 'Sub-theme', 'Reason', 'Language', 'Source', 'Rating', 'Time Period', 'Customer ID'];
+interface Props {
+  gf: GroupFilter;
+}
 
-  let conditionForFields = {'Theme' : ['Equals', 'Does not equal', 'Like', 'Not like', 'Is Empty', 'Is', 'Is not'],
-                              'default' : ['Equals', 'Does not equal', 'Like', 'Not like', 'Is Empty', 'Is', 'Is not']}
+function FilterBox(props: Props) {
+  let [filters, setFilters] = useState(props.gf.children.slice());
 
-  let conditionMapping = {'Equals' : '==',
-                          'Does not equal' : '!='}
-
-  let valueForFields = {'Theme' : ['performance', 'offer'],
-                        'Sub-theme' : ['performance', 'platform'],
-                        'default' : []}
-  let fb1 = new FilterBuilder(fields, conditionForFields, conditionMapping, valueForFields);
-  let fb2 = new FilterBuilder(fields, conditionForFields, conditionMapping, valueForFields);
+  let handleClick = ()=>{
+    let filt = props.gf.addFilter();
+    setFilters([...filters, filt]);
+    // console.log(props.gf.children, filters)
+  }
   return (
     <div className="w-1/2 self-center">
-      <p>Hi</p>
-      <Filter filter = {fb1}></Filter>
-      <Filter filter = {fb2}></Filter>
-      <button onClick = {()=>{
-        console.log(fb1.getQueryString());
-      }}>Build</button>
+      {
+        filters.map((val, key) => 
+          <Filter key = {key} filter = {val as FilterBuilder}></Filter>
+        )
+      }
+      <button onClick = {handleClick}>Add Filter</button>
     </div>
   );
 }

@@ -10,6 +10,7 @@ function Filter(props :Props) {
     let [selectedField, setSelectedField] = useState('default');
     let classn = "w-1/4 p-2 m-5 bg-gray-600";
     let classo = "p-2";
+    // console.log(props.filter)
     return (
         <div className="flex justify-self-center text-white rounded bg-gray-800 shadow-lg">
             <select className={classn} name = 'Field' onChange = {(val) => {
