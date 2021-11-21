@@ -21,8 +21,10 @@ function App() {
   gf.addGroupFilter();
   return (
     <div className="App">
-      <p>Hi</p>
-      <QueryBuild gf={gf}></QueryBuild>
+      <h1 className="m-6 text-xl">Query Builder</h1>
+      <div className="flex justify-center items-center w-3/5 m-auto">
+        <QueryBuild gf={gf}></QueryBuild>
+      </div>
     </div>
   );
 }

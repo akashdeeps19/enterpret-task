@@ -92,7 +92,7 @@ export class GroupFilter{
     getQueryString(){
         this.getQueryRule()
         let opMap = {'AND' : '&&', 'OR' : '||'};
-        let query = "(";
+        let query = this.ruleGroup.not?"!(":"(";
         for(let i = 0;i < this.children.length-1;i++){
             query += `${this.children[i].getQueryString()}  ${opMap[this.ruleGroup.conjunction]} `;
         }

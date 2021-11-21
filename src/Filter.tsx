@@ -8,11 +8,11 @@ interface Props {
 
 function Filter(props :Props) {
     let [selectedField, setSelectedField] = useState('default');
-    let classn = "w-1/4 p-2 m-5 bg-gray-600";
+    let classn = "w-1/4 p-2 m-5 bg-gray-500";
     let classo = "p-2";
     // console.log(props.filter)
     return (
-        <div className="flex justify-self-center text-white rounded bg-gray-800 shadow-lg">
+        <div className="flex justify-center m-5 text-white rounded bg-gray-600 shadow-lg">
             <select className={classn} name = 'Field' onChange = {(val) => {
                 props.filter.rule.field = val.target.value;
                 setSelectedField(val.target.value);}
