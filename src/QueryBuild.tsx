@@ -6,10 +6,19 @@ interface Props {
     gf: GroupFilter;
 }
 
-function QueryBuild(props: Props) {
+interface GFilterElement {
+    filter: GroupFilter;
+    key: number;
+  }
 
+let keys = 0;
+function QueryBuild(props: Props) {
+    let filts :GFilterElement[] = [];
+    for(let i = 0;i < props.gf.children.length;i++){
+        filts.push({filter: props.gf.children[i] as GroupFilter, key:keys++})
+    }
     
-    let [gfs, setGfs] = useState(props.gf.children.slice());
+    let [gfs, setGfs] = useState(filts);
     let [query, setQuery] = useState('Query');
     let [and, setAnd] = useState(true);
     let [not, setNot] = useState(false)
@@ -23,6 +32,8 @@ function QueryBuild(props: Props) {
         setNot(!not)
     }
     let handleDelete = (key:number)=>{
+        if(gfs.length === 1)
+            return;
         props.gf.children.splice(key,1);
         setGfs(gfs.filter((_,i) => i !== key));
       }
@@ -45,9 +56,9 @@ function QueryBuild(props: Props) {
                 <div className="flex-col justify-center">
                     {
                         gfs.map((val, key) => 
-                            <div key = {key} className="flex">
-                            <FilterBox gf = {val as GroupFilter}></FilterBox>
-                            {key!==0 && <button className = "bg-gray-800 mt-2 h-10 p-2" onClick={() => handleDelete(key)}>
+                            <div key = {val.key} className="flex">
+                            <FilterBox gf = {val.filter}></FilterBox>
+                            {gfs.length!==1 && <button className = "bg-gray-800 mt-2 h-10 p-2" onClick={() => handleDelete(key)}>
                             <svg fill="#ffffff" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                                 width="12" height="12"
                                 viewBox="0 0 24 24">
@@ -63,8 +74,8 @@ function QueryBuild(props: Props) {
             </div>
             <div className="flex justify-start">
                 <button className="p-2 bg-indigo-600 rounded" onClick = {()=>{
-                    let filt = props.gf.addGroupFilter();
-                    setGfs([...gfs, filt])
+                    let filt = props.gf.addGroupFilter() as GroupFilter;
+                    setGfs([...gfs, {filter: filt, key: keys++}])
                 }}>+ Add Group Filter</button>
             </div>
             

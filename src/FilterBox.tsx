@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+
 import Filter from './Filter';
 import { FilterBuilder, GroupFilter } from './queryBuilder';
 
@@ -6,14 +7,23 @@ interface Props {
   gf: GroupFilter;
 }
 
+interface FilterElement {
+  filter: FilterBuilder;
+  key: number;
+}
+let keys = 0;
 function FilterBox(props: Props) {
-  let [filters, setFilters] = useState(props.gf.children.slice());
+  let filts :FilterElement[] = [];
+  for(let i = 0;i < props.gf.children.length;i++){
+    filts.push({filter: props.gf.children[i] as FilterBuilder, key:keys++})
+  }
+  let [filters, setFilters] = useState(filts);
   let [and, setAnd] = useState(true)
   let [not, setNot] = useState(false)
 
   let handleClick = ()=>{
-    let filt = props.gf.addFilter();
-    setFilters([...filters, filt]);
+    let filt = props.gf.addFilter() as FilterBuilder;
+    setFilters([...filters, {filter: filt, key: keys++}]);
     // console.log(props.gf.children, filters)
   }
   let toggleAnd = ()=>{
@@ -25,6 +35,8 @@ function FilterBox(props: Props) {
     setNot(!not)
   }
   let handleDelete = (key:number)=>{
+    if(filters.length === 1)
+      return;
     props.gf.children.splice(key,1);
     setFilters(filters.filter((_,i) => i !== key));
   }
@@ -37,9 +49,9 @@ function FilterBox(props: Props) {
       </div>
       {
         filters.map((val, key) => 
-          <div key = {key} className="flex items-center">
-              <Filter filter = {val as FilterBuilder}></Filter>
-              {key!==0 && <button className = "bg-gray-500 h-10 p-2" onClick={() => handleDelete(key)}>
+          <div key = {val.key} className="flex items-center">
+              <Filter filter = {val.filter}></Filter>
+              {filters.length!==1 && <button className = "bg-gray-500 h-10 p-2" onClick={() => handleDelete(key)}>
               <svg fill="#ffffff" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                 width="16" height="16"
                 viewBox="0 0 24 24">
