@@ -24,7 +24,7 @@ export class FilterBuilder{
         this.conditionForFields = conditionForFields;
         this.conditionMapping = conditionMapping;
         this.valueForFields = valueForFields;
-        this.rule = {condition : '', type : 'rule'};
+        this.rule = {field: '',condition : 'default',value:'', type : 'rule'};
     }
 
     setCondition(field: string): string[]{

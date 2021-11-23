@@ -17,7 +17,7 @@ function Filter(props :Props) {
                 props.filter.rule.field = val.target.value;
                 setSelectedField(val.target.value);}
             }>
-            <option className = {classo} hidden>Field</option>
+            <option className = {classo} hidden>Select Field</option>
             {
                 props.filter.fields.map((val, key) => 
                 <option className = {classo} key={key}>{val}</option> )
@@ -26,7 +26,7 @@ function Filter(props :Props) {
             <select className={classn} name = 'Condition' onChange = {(val) => {
                 props.filter.rule.condition = val.target.value;}
             }>
-            <option className = {classo} hidden>Condition</option>
+            <option className = {classo} hidden>Select Condition</option>
             {
                 props.filter.setCondition(selectedField).map((val, key) => 
                 <option className = {classo} key={key}>{val}</option> )
@@ -35,7 +35,7 @@ function Filter(props :Props) {
             <select className={classn} name = 'Criteria' onChange = {(val) => {
                 props.filter.rule.value = val.target.value;}
             }>
-            <option className = {classo} hidden>Criteria</option>
+            <option className = {classo} hidden>Select Criteria</option>
             {
                 props.filter.setValue(selectedField).map((val, key) => 
                 <option className = {classo} key={key}>{val}</option> )

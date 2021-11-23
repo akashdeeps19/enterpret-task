@@ -7,15 +7,20 @@ import QueryBuild from './QueryBuild';
 function App() {
   let fields = ['Theme', 'Sub-theme', 'Reason', 'Language', 'Source', 'Rating', 'Time Period', 'Customer ID'];
 
-  let conditionForFields = {'Theme' : ['Equals', 'Does not equal', 'Like', 'Not like', 'Is Empty', 'Is', 'Is not'],
-                              'default' : ['Equals', 'Does not equal', 'Like', 'Not like', 'Is Empty', 'Is', 'Is not']}
+  let conditionForFields = {'Theme' : ['Equals', 'Does not equal', 'Greater', 'Lesser', 'Is', 'Is not'],
+                              'default' : ['Equals', 'Does not equal', 'Greater', 'Lesser', 'Is', 'Is not']}
 
   let conditionMapping = {'Equals' : '==',
-                          'Does not equal' : '!='}
+                          'Does not equal' : '!=',
+                          'Is' : '===',
+                          'Is not' : '!==',
+                          'Greater' : '>',
+                          'Lesser' : '<'
+                        }
 
   let valueForFields = {'Theme' : ['performance', 'offer'],
-                      'Sub-theme' : ['performance', 'platform'],
-                      'default' : []}
+                      'Sub-theme' : ['efficieny', 'platform'],
+                      'default' : ['value1', 'value2']}
   
   let gf = new GroupFilter(fields, conditionForFields, conditionMapping, valueForFields);
   gf.addGroupFilter();
